@@ -1,0 +1,178 @@
+# version 2021-04-20
+# Build and Object Folders
+bin
+obj
+
+# Files upload and download
+upload
+tempfiles
+uploadfiles
+~*.*
+
+# Nuget packages directory
+packages
+
+# Build results
+[Dd]ebug
+[Rr]elease
+x64
+*_i.c
+*_p.c
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.log
+*.vspscc
+*.vssscc
+*.ldb
+.builds
+
+
+# Backup file  
+*.bak
+~$*
+
+# picture dir temp file
+[Tt]humbs.db
+.DS_Store
+.*.swp
+
+# berryinfo development
+tempfiles
+uploadfiles 
+
+# User-specific files
+*.suo
+*.user
+
+#visual studio
+.vs
+Bin
+bin
+obj 
+*.so
+*.so.[0-9]*
+*.a
+*.o
+*.lo
+*.la
+*.al
+.libs
+### VS Code ###
+.vscode
+
+### IntelliJ IDEA Java ###
+.idea
+*.iws
+*.iml
+*.ipr
+out
+.gradle
+build
+gradle
+!**/src/main/**/out/
+!**/src/test/**/out/
+!gradle/wrapper/gradle-wrapper.jar
+local.properties
+
+# android
+DataUser
+local.properties
+PublishOutput
+
+# frontend  前端
+node_modules
+dist
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+tests/**/coverage/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.springBeans
+.sts4-cache
+bin
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# 数据库
+*.pdb
+
+# 其他个人文件夹
+TestResults
+FacksAssemblies
+PublishOutput
+DataUser
+Outputs
+*.log
+log
+[Ll]ogs
+logs
+
+# PyChram Python
+*.pyc
+*.pyo __pycache__
+*.rej
+*~ #*#
+.#*
+.ipynb_checkpoints
+*.save
+
+#Git
+.git
+.github
+
+# 科研文件夹
+ppi
+data
+Data
+runs
+tmpmodel
+pretrained
+save_models
+*.pt
+.eggs
+.eggs/
+dist
+pygcn.egg-info
+.ipynb_checkpoints/
+gcn.egg-info
+_ext
+exp
+results
+datasets
+elliptic_bitcoin_dataset
+*.egg-info
+
+# MindSpore
+somas_meta
+
+# Pycharm同步服务器的项目
+GCNII_scc
+ppnp_scc
+NPGCN
+geom-gcn_scc
+GraphSAGE_scc
+pygcn_scc
