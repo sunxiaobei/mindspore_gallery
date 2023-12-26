@@ -1,8 +1,3 @@
-import math
-
-# import torch
-# from torch.nn.parameter import Parameter
-# from torch.nn.modules.module import Module
 import numpy as np
 import mindspore as ms
 from mindspore import nn
@@ -23,23 +18,12 @@ class GraphConvolution(nn.Cell):
         # 初始化权重矩阵
         init_range = np.sqrt(6.0 / (self.out_features + self.in_features))
         initial = np.random.uniform(-init_range, init_range, (self.in_features, self.out_features)).astype(np.float32)
-        self.weight = Parameter(Tensor(initial, ms.float32), name='w')  # weight
-        # self.weight = Parameter(torch.FloatTensor(in_features, out_features))  # 权重参数
+        self.weight = Parameter(Tensor(initial, ms.float32), name='w')  # 权重参数
         if bias:
             initial_bias = np.random.uniform(-init_range, init_range, (self.out_features, )).astype(np.float32)
-            self.bias = Parameter(Tensor(initial_bias, ms.float32), name='b')  # bias
-            # self.bias = ms.Parameter(ms.ops.Zeros()(self.out_feat_size, ms.float32))
-            # self.bias = Parameter(torch.FloatTensor(out_features))  # 偏置参数
+            self.bias = Parameter(Tensor(initial_bias, ms.float32), name='b')  # 偏置参数
         else:
             self.register_parameter('bias', None)
-        # self.reset_parameters()  # 参数重置
-
-    # 参数重置
-    def reset_parameters(self):
-        stdv = 1. / math.sqrt(self.weight.size(1))
-        self.weight.data.uniform_(-stdv, stdv)
-        if self.bias is not None:
-            self.bias.data.uniform_(-stdv, stdv)
 
     # 前向传播（输入层特征，邻接矩阵）
     def construct(self, input, adj):

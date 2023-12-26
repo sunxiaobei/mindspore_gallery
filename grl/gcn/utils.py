@@ -1,8 +1,6 @@
 import numpy as np
 import scipy.sparse as sp
-# import torch
 import mindspore as ms
-from mindspore import ops
 import sys
 # 设置最大递归次数
 sys.setrecursionlimit(99999)
@@ -35,24 +33,12 @@ def row_normalize(mx):
     mx = r_mat_inv.dot(mx)  # 归一化后的特征 = 特征和的倒数（对角阵 d*d维）* 特征矩阵（n*d）
     return mx
 
+
 # 计算acc （输出结果，标签）
 def accuracy(output, labels):
-    # preds = output.max(1)[1].type_as(labels)  # 将预测结果转化成labels格式
-    # correct = preds.eq(labels).double()  # 预测结果与标签一致
-    # correct = correct.sum()  # 预测标签正确的数量
     pred = np.argmax(output.asnumpy(), axis=1)
     correct = (pred == labels.asnumpy()).sum()
     return correct / len(labels)  # 预测标签正确的数量/总的预测数量
-
-
-# # 稀疏矩阵转换成Tensor稀疏矩阵  输入稀疏矩阵  2708*2708
-# def sparse_mx_to_torch_sparse_tensor(sparse_mx):
-#     """Convert a scipy sparse matrix to a torch sparse tensor."""
-#     sparse_mx = sparse_mx.tocoo().astype(np.float32)  # 转换成稀疏矩阵tocoo 32位浮点型
-#     indices = torch.from_numpy(np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))  # 稀疏矩阵下标
-#     values = torch.from_numpy(sparse_mx.data)  # 矩阵值
-#     shape = torch.Size(sparse_mx.shape)  # 矩阵维度 2708*2708
-#     return torch.sparse.FloatTensor(indices, values, shape)  # Tensor版稀疏矩阵
 
 
 # 计算标准差  numpy.std() 求标准差的时候默认是除以 n 的，即是有偏的; numpy.std() 求标准差的时候默认是除以 n 的，即是有偏的
@@ -72,14 +58,6 @@ def encode_onehot(labels):
     classes_dict = {c: np.identity(len(classes))[i, :] for i, c in enumerate(classes)}  # 遍历所有标签去重之后
     labels_onehot = np.array(list(map(classes_dict.get, labels)), dtype=np.int32)  # 转换成One-hot
     return labels_onehot
-
-
-# 采样mask，数据集标记 train test val
-def sample_mask(idx, l):
-    """Create mask."""
-    mask = np.zeros(l)
-    mask[idx] = 1
-    return np.array(mask, dtype=np.bool)
 
 
 # 读取数据集文件
@@ -131,14 +109,6 @@ def load_data(path="data/", dataset="cora"):
     idx_test = [i for i in range(500, 1500)]
 
     features = ms.Tensor(np.array(features.todense()), ms.float32)
-    # labels = ms.Tensor(np.where(labels)[1], ms.int32)
     labels = ms.Tensor(np.where(labels)[1], ms.int32)
-    # features = torch.FloatTensor(np.array(features.todense()))
-    # labels = torch.LongTensor(np.where(labels)[1])
-    # adj = sparse_mx_to_torch_sparse_tensor(adj)
-
-    # idx_train = torch.LongTensor(idx_train)
-    # idx_val = torch.LongTensor(idx_val)
-    # idx_test = torch.LongTensor(idx_test)
 
     return adj, features, labels, idx_train, idx_val, idx_test

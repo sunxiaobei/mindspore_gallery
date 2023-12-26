@@ -1,7 +1,3 @@
-# import torch.nn as nn
-# import torch.nn.functional as F
-
-import mindspore as ms
 from mindspore import nn
 from mindspore import ops
 from grl.gcn.layers import GraphConvolution
@@ -11,7 +7,6 @@ from grl.gcn.layers import GraphConvolution
 class GCN(nn.Cell):
     def __init__(self, nfeat, nhid, nclass, dropout):
         super(GCN, self).__init__()
-
         self.gc1 = GraphConvolution(nfeat, nhid)  # 第一层GCN
         self.gc2 = GraphConvolution(nhid, nclass)  # 第二层GCN
         self.dropout = dropout  # 输出层
