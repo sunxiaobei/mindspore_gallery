@@ -1,11 +1,17 @@
 import math
-import torch
-from torch.nn.parameter import Parameter
-from torch.nn.modules.module import Module
+
+# import torch
+# from torch.nn.parameter import Parameter
+# from torch.nn.modules.module import Module
+import numpy as np
+import mindspore as ms
+from mindspore import nn
+from mindspore import ops
+from mindspore import Tensor, Parameter
 
 
 # 单层GCN层
-class GraphConvolution(Module):
+class GraphConvolution(nn.Cell):
     """
     Simple GCN layer, similar to https://arxiv.org/abs/1609.02907
     """
@@ -14,12 +20,19 @@ class GraphConvolution(Module):
         super(GraphConvolution, self).__init__()
         self.in_features = in_features  # 输入维度
         self.out_features = out_features  # 输出维度
-        self.weight = Parameter(torch.FloatTensor(in_features, out_features))  # 权重参数
+        # 初始化权重矩阵
+        init_range = np.sqrt(6.0 / (self.out_features + self.in_features))
+        initial = np.random.uniform(-init_range, init_range, (self.in_features, self.out_features)).astype(np.float32)
+        self.weight = Parameter(Tensor(initial, ms.float32), name='w')  # weight
+        # self.weight = Parameter(torch.FloatTensor(in_features, out_features))  # 权重参数
         if bias:
-            self.bias = Parameter(torch.FloatTensor(out_features))  # 偏置参数
+            initial_bias = np.random.uniform(-init_range, init_range, (self.out_features, )).astype(np.float32)
+            self.bias = Parameter(Tensor(initial_bias, ms.float32), name='b')  # bias
+            # self.bias = ms.Parameter(ms.ops.Zeros()(self.out_feat_size, ms.float32))
+            # self.bias = Parameter(torch.FloatTensor(out_features))  # 偏置参数
         else:
             self.register_parameter('bias', None)
-        self.reset_parameters()  # 参数重置
+        # self.reset_parameters()  # 参数重置
 
     # 参数重置
     def reset_parameters(self):
@@ -29,9 +42,10 @@ class GraphConvolution(Module):
             self.bias.data.uniform_(-stdv, stdv)
 
     # 前向传播（输入层特征，邻接矩阵）
-    def forward(self, input, adj):
-        support = torch.mm(input, self.weight)  # 输入层特征 * 权重  即 HW
-        output = torch.spmm(adj, support)  # 稀疏矩阵乘法 即 AHW
+    def construct(self, input, adj):
+        support = ops.mm(input, self.weight)  # 输入层特征 * 权重  即
+        # ops.SparseTensorDenseMatmul()    MatMul()  ops.matmul()
+        output = ops.matmul(adj, support)  # 稀疏矩阵乘法 即 AHW
         if self.bias is not None:
             return output + self.bias   # 偏置项
         else:
