@@ -23,7 +23,7 @@ class GraphConvolution(nn.Cell):
             initial_bias = np.random.uniform(-init_range, init_range, (self.out_features, )).astype(np.float32)
             self.bias = Parameter(Tensor(initial_bias, ms.float32), name='b')  # 偏置参数
         else:
-            self.register_parameter('bias', None)
+            self.bias = None
 
     # 前向传播（输入层特征，邻接矩阵）
     def construct(self, input, adj):

@@ -17,6 +17,7 @@ def normalize_adj(adj):
     d_mat_inv_sqrt = sp.diags(d_inv_sqrt)  # 对角
     return adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt).tocoo()  # D^{-1/2}AD^{-1/2}  Coo稀疏矩阵
 
+
 # 行归一化  特征归一化 n*d  和  邻接矩阵归一化 按行 n*n
 # 归一化  特征矩阵  输入特征矩阵  preprocess_features  Lil格式稀疏矩阵
 # 处理特征:特征矩阵进行归一化并返回一个格式为(coords, values, shape)的元组
@@ -89,26 +90,23 @@ def load_data(path="data/", dataset="cora"):
 
     # 读取数据文件
     adj, features, labels = load_data_file(path=path, dataset="cora", datatype="pygcn")
-    # adj = sp.coo_matrix(adj)  # 邻接矩阵稀疏化 Coo
-    # adj = adj + adj.T.multiply(adj.T > adj) + sp.eye(nodes_num)  # 对称矩阵
-    # 矩阵转换成对称矩阵
-    # build symmetric adjacency matrix
     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
 
-    nor_adj = normalize_adj(adj)  # 对称归一化
-    adj = np.array(nor_adj.todense())  # 稠密矩阵  目前MS 无法稀疏矩阵乘法
-    # 加入自环 归一化邻接矩阵
-    # adj = row_normalize(adj + sp.eye(adj.shape[0]))
+    # # 原文：对称归一化
+    # nor_adj = normalize_adj(adj)  # 对称归一化
+    # pygcn源代码，加入自环 归一化邻接矩阵， 效果更好
+    adj = sp.coo_matrix(adj)  # 邻接矩阵稀疏化 Coo
+    nor_adj = row_normalize(adj + sp.eye(adj.shape[0]))
+    adj = np.array(nor_adj.todense()).astype(np.float32)  # 稠密矩阵  目前MS 无法稀疏矩阵乘法
 
     # 特征归一化
     features = row_normalize(features)
+    features = ms.Tensor(np.array(features.todense()), ms.float32)
+    labels = ms.Tensor(np.where(labels)[1], ms.int32)
 
     # 半监督节点分类数据集划分
     idx_train = [i for i in range(140)]
     idx_val = [i for i in range(200, 500)]
     idx_test = [i for i in range(500, 1500)]
-
-    features = ms.Tensor(np.array(features.todense()), ms.float32)
-    labels = ms.Tensor(np.where(labels)[1], ms.int32)
 
     return adj, features, labels, idx_train, idx_val, idx_test

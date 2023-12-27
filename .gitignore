@@ -176,3 +176,6 @@ NPGCN
 geom-gcn_scc
 GraphSAGE_scc
 pygcn_scc
+
+# Scripts
+.sh

@@ -9,6 +9,10 @@ Code: [Pytorch](https://github.com/tkipf/pygcn), [Tenserflow](https://github.com
 
 #### Environment Requirements
 
+- Python 3.9
+- MindSpore 2.1.1
+- Cuda 11.1
+
 ```scss
 conda create -n ms2 python=3.9
 
